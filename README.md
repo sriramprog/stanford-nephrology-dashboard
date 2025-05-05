@@ -1,68 +1,108 @@
 # Stanford Nephrology Decision-Support Dashboard
 
-This decision-support dashboard was created as part of a Stanford Medicine externship focused on improving operational workflows in outpatient nephrology clinics. The tool addresses a common yet high-risk issue: **delays in responding to critically elevated potassium levels** (e.g., K+ ≥ 6.0 mmol/L) due to unclear escalation pathways.
+This clinical dashboard was developed during a Stanford Medicine externship to address a critical gap in outpatient nephrology operations: the delayed escalation of **elevated potassium lab values** (hyperkalemia), which can pose immediate cardiac risks if left unaddressed.
 
 ---
 
-## 🔍 Background & Root Cause Analysis
+## 🏥 Background: Stanford Nephrology Clinic Setting
 
-The project was inspired by a real patient safety incident involving a **missed potassium alert (6.2 mmol/L)** that went unaddressed, leading to a delayed response and potential harm. Using **5 Whys analysis**, I traced the problem back to the **absence of standardized escalation protocols and accountability systems**.
+The externship focused on a busy outpatient nephrology clinic serving patients with chronic kidney disease (CKD), many of whom are medically complex and routinely undergo lab monitoring. The clinic's workflows involve multiple care team members — including nephrologists, advanced practice providers (APPs), registered nurses (RNs), and patient care coordinators (PCCs) — making **role clarity and escalation timing** essential for safety.
 
-### Root Cause:
-> *Clinic staff lacked a clear, role-specific protocol for handling critical lab values, which led to inconsistent handoffs and delayed provider interventions.*
-
-I supplemented this with a **text-based decision tree and MermaidJS flowchart** that mapped clinical decisions from lab result review → symptom evaluation → medical history → repeat testing → provider action → documentation and safety netting.
+A real-world clinical case involving a **missed escalation of a 6.2 mmol/L potassium result** led to delayed intervention and potential harm. This case became the launching point for a structured operational and clinical review.
 
 ---
 
-## 💡 About the Tool
+## 🔍 Root Cause Analysis
 
-This interactive dashboard transforms that decision tree into a **web-based prototype**. It allows staff to enter a patient's scenario and get **immediate, role-specific guidance** on:
+Using the **5 Whys** technique, I conducted a root cause analysis to identify why the lab result wasn’t escalated:
 
-- What action to take (flag, escalate, test, treat)
-- When and to whom to escalate
-- What to document and communicate
-- Clinical safety triggers for urgent intervention
+1. **Why wasn’t the elevated potassium addressed?**  
+   → Because it was flagged by the RN but never escalated to a provider.
 
-The goal: **reduce cognitive load**, **minimize delays**, and **increase standardization** in outpatient nephrology settings.
+2. **Why wasn’t it escalated?**  
+   → Because the RN was unclear on escalation responsibility and timing.
+
+3. **Why was there confusion around roles?**  
+   → Because the clinic lacked standardized escalation protocols for critical lab results.
+
+4. **Why didn’t protocols exist?**  
+   → Because lab workflows hadn’t been prioritized in training or process audits.
+
+5. **Why were lab workflows not prioritized?**  
+   → Because leadership underestimated the clinical risk and lacked feedback data to prompt change.
+
+### 🎯 Root Cause Identified:
+> *There was no enforced, role-specific protocol or accountability system for managing elevated potassium values in a time-sensitive, clinically appropriate way.*
 
 ---
 
-## 👩‍⚕️ Who It's For
+## 🧠 From Decision Tree to Dashboard
 
-- **RNs, APPs, Nephrologists, and PCCs** seeking real-time guidance
-- **Clinic leadership** wanting scalable SOPs
-- **Quality improvement teams** identifying workflow gaps
-- **EHR integrators** prototyping CDS tools
+To address this, I constructed a clinical **decision tree** based on nephrology guidelines (including KDIGO and internal Stanford protocols), outlining steps from:
+
+1. **Lab result review timing**
+2. **Patient symptom evaluation**
+3. **Medical history risk assessment**
+4. **Repeat lab testing and thresholds**
+5. **Provider intervention**
+6. **Safety net triggers** (e.g., K+ > 6.5 mmol/L or abnormal ECG)
+
+I then translated this decision logic into an **interactive web-based tool** using HTML, CSS, and JavaScript to help staff instantly determine what action to take, when to escalate, and how to document their actions.
+
+---
+
+## 👩‍⚕️ Who This Dashboard Supports
+
+- **RNs**: Know exactly when and how to escalate abnormal results
+- **APPs & Nephrologists**: Get summarized context and next steps
+- **PCCs**: Understand workflow handoffs
+- **Leadership**: Standardize protocols across teams
+
+---
+
+## 💡 Key Features
+
+- Clinical decision tree logic tailored to nephrology
+- Role-specific guidance based on patient condition
+- Stanford-branded interface for professional presentation
+- Real-time response logic for urgent labs
+- Clear documentation checklist
 
 ---
 
 ## 🚀 Live Demo
 
-🔗 [View the Dashboard Here](https://github.com/sriramprog/stanford-nephrology-dashboard)
-Click on index.html file and run the code.
+🔗 [View the Dashboard](https://github.com/sriramprog/stanford-nephrology-dashboard)
 
 ---
 
-## 🧠 Why This Externship Mattered to Me
+## 📣 Project Scope & Status
 
-As a data analyst and aspiring healthcare technologist, I was drawn to the externship because it combined **clinical logic**, **process optimization**, and **patient safety** — three areas I care deeply about. I wanted to bridge the gap between frontline staff confusion and backend data-driven protocols, especially in high-risk situations like hyperkalemia.
-
-This project reflects my belief that **clarity saves lives**, and that good design in healthcare isn’t about complexity — it’s about the right action at the right time.
+> **This is a work in progress.**  
+> The dashboard represents a functional prototype built within the time and scope of the Stanford externship. It focuses on clinical logic, escalation clarity, and decision support — not UI polish or full-scale engineering. As such, it’s not a reflection of my full coding ability, but rather a demonstration of how structured problem-solving, root cause analysis, and thoughtful design can directly support patient safety in a clinical setting.
 
 ---
 
-## 📌 Future Improvements
+## 🧠 Why This Project Mattered
 
-- PDF chart-note generator for provider documentation  
-- Audit log for response tracking and training feedback  
-- Full integration with EHR alert systems (via FHIR or HL7)  
-- Expanded protocols for other labs (e.g., creatinine, INR)
+As a healthcare data analyst, I’ve worked on predictive models and operational dashboards — but this externship pushed me into **clinical logic design**. I was inspired by how a single missed lab result could cascade into patient harm, and how simple, clear interfaces can empower staff to make faster, safer decisions. 
+
+This dashboard isn’t just a tech demo — it’s a reflection of my belief that:
+> *“If you make the right thing easy to do, you’ll save time, prevent errors, and protect lives.”*
 
 ---
 
 ## 🛠 Technologies Used
 
-- HTML, CSS, JavaScript (Vanilla)
-- Clinical decision trees
-- Stanford Medicine visual style
+- HTML5, CSS3, JavaScript (Vanilla)
+- Decision tree modeling (text + MermaidJS + prototype logic)
+- Stanford visual identity (color, branding)
+
+---
+
+## 📌 Future Enhancements
+
+- PDF chart-note generator  
+- EHR integration using FHIR/SMART  
+- Audit log of decisions made for QI tracking  
+- Expanded protocols for other labs (e.g., creatinine, phosphorus)
