@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stanford Nephrology Decision-Support Dashboard</title>
+  <style>
+    /* General body and layout styling */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #8c1515;
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header img {
+      height: 40px;
+    }
+    .container {
+      display: flex;
+      gap: 40px;
+      padding: 40px;
+    }
+    .form-panel, .output-panel {
+      width: 50%;
+      background: white;
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      color: #8c1515;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #8c1515;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      font-size: 16px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #8c1515;
+    }
+    .output-panel p {
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Stanford Nephrology Decision-Support Tool</h1>
+    </div>
+    <div>
+      <img src="https://identity.stanford.edu/wp-content/uploads/2020/03/Stanford_University_Logo.png" alt="Stanford Logo">
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Left panel: user input form -->
+    <div class="form-panel">
+      <h2>Input Patient Scenario</h2>
+      <form id="decisionForm">
+        <!-- Dropdown for selecting user role -->
+        <label for="role">Your Role</label>
+        <select id="role">
+          <option>RN</option>
+          <option>APP</option>
+          <option>Nephrologist</option>
+          <option>PCC</option>
+        </select>
+
+        <!-- Input for potassium value -->
+        <label for="kval">Latest Potassium Level (mmol/L)</label>
+        <input type="number" step="0.1" id="kval">
+
+        <!-- Whether the lab was reviewed in a timely manner -->
+        <label for="labReviewed">Lab Reviewed Within 1 Hour?</label>
+        <select id="labReviewed">
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+
+        <!-- Patient symptomatic status -->
+        <label for="symptomatic">Is Patient Symptomatic?</label>
+        <select id="symptomatic">
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+
+        <!-- Checkbox flags for patient medical history -->
+        <label for="history">Medical History Flags</label>
+        <input type="checkbox" id="ckd"> Severe CKD<br>
+        <input type="checkbox" id="heart"> Heart Disease<br>
+        <input type="checkbox" id="meds"> Recent Med Changes<br>
+
+        <!-- Optional field for repeat potassium -->
+        <label for="repeatVal">Repeat Potassium (mmol/L, if available)</label>
+        <input type="number" step="0.1" id="repeatVal">
+
+        <!-- Dropdown for ECG findings -->
+        <label for="ecg">ECG Abnormal?</label>
+        <select id="ecg">
+          <option>--</option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+
+        <!-- Button triggers logic generation -->
+        <button type="button" onclick="generateOutput()">Get Guidance</button>
+      </form>
+    </div>
+
+    <!-- Right panel: outputs generated from logic -->
+    <div class="output-panel">
+      <h2>Recommended Action Steps</h2>
+      <div id="output"></div>
+    </div>
+  </div>
+
+  <script>
+    function generateOutput() {
+      // Collect form inputs and convert where necessary
+      const role = document.getElementById("role").value;
+      const kval = parseFloat(document.getElementById("kval").value);
+      const repeatVal = parseFloat(document.getElementById("repeatVal").value);
+      const labReviewed = document.getElementById("labReviewed").value;
+      const symptomatic = document.getElementById("symptomatic").value;
+      const ckd = document.getElementById("ckd").checked;
+      const heart = document.getElementById("heart").checked;
+      const meds = document.getElementById("meds").checked;
+      const ecg = document.getElementById("ecg").value;
+
+      let response = "";
+
+      // Decision tree logic begins here
+      if (kval >= 6.0) {
+        if (labReviewed === "No") {
+          // Step 1: Lab not reviewed in 1 hour
+          response += `<p><strong>Step 1:</strong> Lab not reviewed in 1 hour → Flag as “Urgent Unreviewed Lab”. Escalate to APP/MD immediately. Document delay.</p>`;
+        } else {
+          response += `<p><strong>Step 1:</strong> Lab reviewed in time → Proceed.</p>`;
+
+          if (symptomatic === "Yes") {
+            // Step 2: Symptomatic patient
+            response += `<p><strong>Step 2:</strong> Patient symptomatic → Immediate escalation to MD/APP. Arrange ECG and evaluate for ER transfer.</p>`;
+          } else {
+            // Step 3: Check for medical history flags
+            if (ckd || heart || meds) {
+              response += `<p><strong>Step 3:</strong> Concerning history → Urgent escalation to MD/APP within 2 hours.</p>`;
+            } else {
+              // Step 4: Repeat potassium test if no clear risk factor
+              if (!isNaN(repeatVal)) {
+                if (repeatVal > 5.5) {
+                  response += `<p><strong>Step 4:</strong> Repeat K+ still elevated → Escalate to MD/APP.</p>`;
+                } else {
+                  response += `<p><strong>Step 4:</strong> Repeat K+ normal → Monitor and recheck labs in 1–2 days.</p>`;
+                }
+              } else {
+                response += `<p><strong>Step 4:</strong> No obvious cause → Order STAT repeat potassium test.</p>`;
+              }
+            }
+          }
+
+          // Step 5: MD/APP treatment actions
+          response += `<p><strong>Step 5:</strong> MD/APP to assess. Order ECG. Adjust medications. Consider diuretics, Kayexalate, or emergency dialysis. Schedule 24–48 hr follow-up labs.</p>`;
+
+          // Step 6: Documentation instructions
+          response += `<p><strong>Step 6:</strong> Document lab review time, symptoms, escalation, provider notified, orders, and patient communication.</p>`;
+
+          // Safety Net: urgent intervention if K+ is dangerously high or ECG is abnormal
+          if (kval > 6.5 || ecg === "Yes") {
+            response += `<p><strong>Safety Net:</strong> K+ >6.5 or abnormal ECG → Immediate ER transfer.</p>`;
+          }
+        }
+      } else {
+        // No action for low potassium
+        response += `<p>No action required for potassium < 6.0 mmol/L in this protocol.</p>`;
+      }
+
+      // Inject response into the HTML output section
+      document.getElementById("output").innerHTML = response;
+    }
+  </script>
+</body>
+</html>
